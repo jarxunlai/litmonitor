@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Profiles - LitMonitor{% endblock %}
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Search Profiles</h1>
+    <p>Define reusable weekly search tasks with include keywords, exclusions, journals, and email recipients.</p>
+  </div>
+  <span class="badge">Weekly monitor</span>
+</section>
+
+<section class="panel">
+  <h2>{{ icon("profile") }}Create profile</h2>
+  <form class="form-grid" method="post">
+    <div>
+      <label for="name">Profile name</label>
+      <input id="name" name="name" placeholder="PH endothelial weekly" required>
+    </div>
+    <div>
+      <label for="email_to">Digest recipient</label>
+      <input id="email_to" name="email_to" placeholder="you@example.com" required>
+    </div>
+    <div class="span-2">
+      <label for="include_keywords">Include keywords</label>
+      <input id="include_keywords" name="include_keywords" placeholder="pulmonary hypertension, endothelial, single-cell" required>
+    </div>
+    <div>
+      <label for="exclude_keywords">Exclude keywords</label>
+      <input id="exclude_keywords" name="exclude_keywords" placeholder="case report, editorial">
+    </div>
+    <div>
+      <label for="journals">Journals</label>
+      <input id="journals" name="journals" placeholder="Nature Medicine, Circulation">
+    </div>
+    <div>
+      <label for="date_window">Date window</label>
+      <input id="date_window" name="date_window" value="7d">
+    </div>
+    <div>
+      <label>&nbsp;</label>
+      <button type="submit">{{ icon("profile") }}Create profile</button>
+    </div>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="section-header">
+    <h2>{{ icon("run") }}Scheduled tasks</h2>
+    <span class="meta">{{ profiles | length }} profiles</span>
+  </div>
+  {% if profiles %}
+    <table>
+      <tr><th>Name</th><th>Keywords</th><th>Email</th><th>Status</th><th>Action</th></tr>
+      {% for profile in profiles %}
+      <tr>
+        <td><strong>{{ profile.name }}</strong><br><span class="meta">{{ profile.date_window }} window</span></td>
+        <td>{{ profile.include_keywords | join(", ") }}</td>
+        <td>{{ profile.email_to }}</td>
+        <td><span class="badge {{ 'green' if profile.enabled else '' }}">{{ "Enabled" if profile.enabled else "Disabled" }}</span></td>
+        <td>
+          <form class="inline-form" method="post" action="/profiles/{{ profile.id }}/run">
+            <button type="submit">{{ icon("run") }}Run</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <div class="empty-state">No weekly tasks have been created. Add a profile above to start monitoring a topic.</div>
+  {% endif %}
+</section>
+{% endblock %}

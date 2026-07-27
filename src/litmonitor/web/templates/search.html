@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Search - LitMonitor{% endblock %}
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Search PubMed</h1>
+    <p>Find biomedical papers, save metadata, and move relevant records into your local review library.</p>
+  </div>
+  <span class="badge green">NCBI E-utilities</span>
+</section>
+
+<section class="search-panel">
+  <h2>{{ icon("search") }}Find biomedical papers</h2>
+  <form class="search-form" method="post">
+    <div>
+      <label for="query">Query</label>
+      <input id="query" name="query" placeholder="pulmonary hypertension endothelial single-cell" value="{{ query or '' }}" required>
+    </div>
+    <div>
+      <label for="journal">Journal filter</label>
+      <input id="journal" name="journal" placeholder="Nature Medicine, Circulation">
+    </div>
+    <div>
+      <label for="since">Since</label>
+      <input id="since" name="since" value="30d">
+    </div>
+    <button type="submit">{{ icon("search") }}Search</button>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="section-header">
+    <h2>{{ icon("paper") }}Article results</h2>
+    <span class="meta">{{ papers | length }} records</span>
+  </div>
+  {% if papers %}
+    <div class="article-list">
+      {% for paper in papers %}
+        <article class="article">
+          <h3>{{ paper.title }}</h3>
+          <div class="article-meta">
+            <span>{{ paper.journal or "Journal not available" }}</span>
+            <span>{{ paper.publication_date or "Date not available" }}</span>
+            {% if paper.pmid %}<span>PMID {{ paper.pmid }}</span>{% endif %}
+            {% if paper.doi %}<span>DOI {{ paper.doi }}</span>{% endif %}
+          </div>
+          {% if paper.abstract %}
+            <p>{{ paper.abstract[:420] }}{% if paper.abstract|length > 420 %}...{% endif %}</p>
+          {% endif %}
+          {% if paper.url %}
+            <a class="button secondary" href="{{ paper.url }}" target="_blank" rel="noreferrer">{{ icon("paper") }}Open PubMed</a>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">Run a query to see PubMed records here. Saved results are deduplicated into the local paper library.</div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <body>
+    <h1>{{ profile.name }}</h1>
+    <p>Run date: {{ generated_at }}</p>
+    <p>Search window: {{ profile.date_window }}</p>
+    <p>Total new papers: {{ paper_count }}</p>
+
+    <h2>Highly relevant papers</h2>
+    {% for item in highly %}
+      {% set paper = item.paper %}
+      {% set result = item.result %}
+      {% set analysis = item.analysis %}
+      <h3>{{ paper.title }}</h3>
+      <p><strong>Journal:</strong> {{ paper.journal or "" }}</p>
+      <p><strong>Date:</strong> {{ paper.publication_date or "" }}</p>
+      <p><strong>DOI:</strong> {{ paper.doi or "" }}</p>
+      <p><strong>PMID:</strong> {{ paper.pmid or "" }}</p>
+      <p><strong>URL:</strong> <a href="{{ paper.url or '#' }}">{{ paper.url or "" }}</a></p>
+      <p><strong>Matched keywords:</strong> {{ result.matched_keywords | join(", ") }}</p>
+      <p><strong>Relevance score:</strong> {{ result.relevance_score }}</p>
+      {% if analysis %}
+        <p><strong>LLM summary:</strong> {{ analysis.one_sentence_summary }}</p>
+        <p><strong>Main finding:</strong> {{ analysis.main_finding }}</p>
+        <p><strong>Method or data:</strong> {{ analysis.method_or_data }}</p>
+        <p><strong>Relevance:</strong> {{ analysis.relevance_to_profile }}</p>
+        <p><strong>Caution:</strong> {{ analysis.limitations_or_caution }}</p>
+        <p><strong>Confidence:</strong> {{ analysis.confidence }}</p>
+      {% else %}
+        <p><strong>LLM summary:</strong> not available</p>
+      {% endif %}
+    {% endfor %}
+
+    <h2>Possibly relevant papers</h2>
+    {% for item in possible %}
+      {% set paper = item.paper %}
+      {% set result = item.result %}
+      {% set analysis = item.analysis %}
+      <h3>{{ paper.title }}</h3>
+      <p><strong>Journal:</strong> {{ paper.journal or "" }}</p>
+      <p><strong>Date:</strong> {{ paper.publication_date or "" }}</p>
+      <p><strong>DOI:</strong> {{ paper.doi or "" }}</p>
+      <p><strong>PMID:</strong> {{ paper.pmid or "" }}</p>
+      <p><strong>URL:</strong> <a href="{{ paper.url or '#' }}">{{ paper.url or "" }}</a></p>
+      <p><strong>Matched keywords:</strong> {{ result.matched_keywords | join(", ") }}</p>
+      <p><strong>Relevance score:</strong> {{ result.relevance_score }}</p>
+      {% if analysis %}
+        <p><strong>LLM summary:</strong> {{ analysis.one_sentence_summary }}</p>
+      {% else %}
+        <p><strong>LLM summary:</strong> not available</p>
+      {% endif %}
+    {% endfor %}
+  </body>
+</html>
+

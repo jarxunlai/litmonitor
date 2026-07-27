@@ -1,0 +1,436 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}LitMonitor{% endblock %}</title>
+    <style>
+      :root {
+        --ink: #1f2933;
+        --muted: #5f6f7a;
+        --line: #d7e0e7;
+        --paper: #ffffff;
+        --soft: #f4f7f9;
+        --blue: #1f5f99;
+        --blue-dark: #17466f;
+        --teal: #287d7d;
+        --gold: #b76e00;
+        --green-soft: #e7f4f1;
+        --blue-soft: #e8f0f7;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: #f7f9fb;
+        color: var(--ink);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        line-height: 1.45;
+      }
+      a { color: var(--blue); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .topbar {
+        background: var(--blue-dark);
+        color: white;
+        border-bottom: 4px solid var(--teal);
+      }
+      .topbar-inner {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 14px 20px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: white;
+        font-weight: 700;
+        font-size: 20px;
+      }
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 4px;
+        background: #ffffff;
+        color: var(--blue-dark);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .status-strip {
+        display: flex;
+        gap: 12px;
+        color: #dbeafe;
+        font-size: 13px;
+        flex-wrap: wrap;
+      }
+      .nav {
+        background: #e5edf3;
+        border-bottom: 1px solid #c4d2de;
+      }
+      .nav-inner {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        gap: 2px;
+        overflow-x: auto;
+      }
+      .nav a {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        min-height: 42px;
+        padding: 0 14px;
+        color: #20394f;
+        font-weight: 600;
+        border-left: 1px solid transparent;
+        border-right: 1px solid transparent;
+        white-space: nowrap;
+      }
+      .nav a.active {
+        background: var(--paper);
+        border-color: #c4d2de;
+        color: var(--blue-dark);
+      }
+
+      .page {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 22px 20px 40px;
+      }
+      .page-title {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 18px;
+      }
+      .page-title h1 {
+        margin: 0;
+        font-size: 28px;
+        color: #18324a;
+      }
+      .page-title p {
+        margin: 4px 0 0;
+        color: var(--muted);
+      }
+      .task-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin: 18px 0 24px;
+      }
+      .task-card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 14px;
+        min-height: 112px;
+      }
+      .task-card h3 {
+        margin: 0 0 7px;
+        font-size: 15px;
+        color: #1c3f5f;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .task-card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .search-panel {
+        background: var(--blue);
+        border-radius: 6px;
+        padding: 18px;
+        color: white;
+        margin-bottom: 22px;
+      }
+      .search-panel h2 {
+        margin: 0 0 10px;
+        font-size: 20px;
+      }
+      .search-form {
+        display: grid;
+        grid-template-columns: minmax(260px, 1fr) minmax(180px, 280px) 110px auto;
+        gap: 10px;
+        align-items: end;
+      }
+      label {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+      input, select {
+        width: 100%;
+        min-height: 38px;
+        border: 1px solid #a8b8c4;
+        border-radius: 4px;
+        padding: 8px 10px;
+        font: inherit;
+        background: white;
+        color: var(--ink);
+      }
+      button, .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 38px;
+        padding: 8px 14px;
+        border-radius: 4px;
+        border: 1px solid #935800;
+        background: var(--gold);
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      button.secondary, .button.secondary {
+        background: #eef4f8;
+        color: #1f4868;
+        border-color: #bdd0dc;
+      }
+
+      .panel {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 16px;
+        margin-bottom: 18px;
+      }
+      .panel h2 {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 12px;
+        color: #18324a;
+        font-size: 20px;
+      }
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 10px;
+      }
+      .section-header h2 { margin: 0; }
+      .meta, .muted { color: var(--muted); }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 2px 8px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #1f4868;
+        background: var(--blue-soft);
+      }
+      .badge.green {
+        color: #155e53;
+        background: var(--green-soft);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--paper);
+      }
+      th, td {
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        padding: 10px 8px;
+        vertical-align: top;
+      }
+      th {
+        color: #314b61;
+        background: #f0f4f7;
+        font-size: 13px;
+      }
+      .article-list {
+        display: grid;
+        gap: 12px;
+      }
+      .article {
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--paper);
+        padding: 14px 16px;
+      }
+      .article h3 {
+        margin: 0 0 6px;
+        font-size: 18px;
+        color: #1c5d91;
+      }
+      .article-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .empty-state {
+        border: 1px dashed #b9c8d3;
+        border-radius: 6px;
+        padding: 18px;
+        background: #fbfcfd;
+        color: var(--muted);
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .form-grid .span-2 { grid-column: 1 / -1; }
+      .inline-form { display: inline; }
+      .icon {
+        width: 18px;
+        height: 18px;
+        flex: 0 0 18px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      @media (max-width: 860px) {
+        .topbar-inner, .page-title { flex-direction: column; align-items: stretch; }
+        .task-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .search-form { grid-template-columns: 1fr; }
+        .form-grid { grid-template-columns: 1fr; }
+      }
+      @media (max-width: 560px) {
+        .task-grid { grid-template-columns: 1fr; }
+        .page { padding: 16px 12px 32px; }
+      }
+    </style>
+  </head>
+  <body>
+    {% macro icon(name) -%}
+      {% if name == "search" %}
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      {% elif name == "profile" %}
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6h16"></path><path d="M4 12h10"></path><path d="M4 18h7"></path><path d="M17 14l3 3 3-3"></path></svg>
+      {% elif name == "paper" %}
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"></path><path d="M14 3v5h5"></path><path d="M9 13h8"></path><path d="M9 17h6"></path></svg>
+      {% elif name == "mail" %}
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>
+      {% elif name == "run" %}
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+      {% elif name == "settings" %}
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"></path><path d="M4 12h2"></path><path d="M18 12h2"></path><path d="M12 4v2"></path><path d="M12 18v2"></path></svg>
+      {% endif %}
+    {%- endmacro %}
+
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="/">
+          <span class="brand-mark">{{ icon("paper") }}</span>
+          <span>LitMonitor</span>
+        </a>
+        <div class="status-strip">
+          <span>PubMed source</span>
+          <span>SQLite library</span>
+          <span>Weekly digest ready</span>
+        </div>
+      </div>
+    </header>
+
+    <nav class="nav" aria-label="Primary">
+      <div class="nav-inner">
+        <a class="{{ 'active' if request.url.path == '/' else '' }}" href="/">{{ icon("settings") }}Dashboard</a>
+        <a class="{{ 'active' if request.url.path.startswith('/search') else '' }}" href="/search">{{ icon("search") }}Search</a>
+        <a class="{{ 'active' if request.url.path.startswith('/profiles') else '' }}" href="/profiles">{{ icon("profile") }}Profiles</a>
+        <a class="{{ 'active' if request.url.path.startswith('/papers') else '' }}" href="/papers">{{ icon("paper") }}Papers</a>
+        <a class="{{ 'active' if request.url.path.startswith('/digests') else '' }}" href="/digests">{{ icon("mail") }}Digests</a>
+      </div>
+    </nav>
+
+    <main class="page">
+      {% block content %}
+        <section class="page-title">
+          <div>
+            <h1>Literature tasks</h1>
+            <p>Search, curate, review, and prepare weekly paper digests from one workspace.</p>
+          </div>
+          <a class="button" href="/search">{{ icon("search") }}Search literature</a>
+        </section>
+
+        <section class="task-grid" aria-label="Literature tasks">
+          <a class="task-card" href="/search">
+            <h3>{{ icon("search") }}Search literature</h3>
+            <p>Run a PubMed query and save normalized paper metadata.</p>
+          </a>
+          <a class="task-card" href="/profiles">
+            <h3>{{ icon("profile") }}Run weekly profiles</h3>
+            <p>Create reusable keyword, journal, schedule, and email profiles.</p>
+          </a>
+          <a class="task-card" href="/papers">
+            <h3>{{ icon("paper") }}Review saved papers</h3>
+            <p>Filter the local library by keyword, journal, PMID, and DOI.</p>
+          </a>
+          <a class="task-card" href="/digests">
+            <h3>{{ icon("mail") }}Prepare digests</h3>
+            <p>Preview generated HTML emails before sending them.</p>
+          </a>
+        </section>
+
+        <section class="panel">
+          <div class="section-header">
+            <h2>{{ icon("profile") }}Search Profiles</h2>
+            <a class="button secondary" href="/profiles">Manage profiles</a>
+          </div>
+          {% if profiles %}
+            <table>
+              <tr><th>Name</th><th>Schedule</th><th>Email</th><th>Keywords</th></tr>
+              {% for profile in profiles %}
+                <tr>
+                  <td><strong>{{ profile.name }}</strong></td>
+                  <td><span class="badge green">{{ profile.schedule }}</span></td>
+                  <td>{{ profile.email_to }}</td>
+                  <td>{{ profile.include_keywords | join(", ") }}</td>
+                </tr>
+              {% endfor %}
+            </table>
+          {% else %}
+            <div class="empty-state">No search profiles yet. Start with a weekly literature profile.</div>
+          {% endif %}
+        </section>
+
+        <section class="panel">
+          <div class="section-header">
+            <h2>{{ icon("paper") }}Recent Papers</h2>
+            <a class="button secondary" href="/papers">Open library</a>
+          </div>
+          {% if papers %}
+            <div class="article-list">
+              {% for paper in papers %}
+                <article class="article">
+                  <h3>{{ paper.title }}</h3>
+                  <div class="article-meta">
+                    <span>{{ paper.journal or "Journal not available" }}</span>
+                    <span>{{ paper.publication_date or "Date not available" }}</span>
+                    {% if paper.pmid %}<span>PMID {{ paper.pmid }}</span>{% endif %}
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty-state">No saved papers yet. Run a PubMed search to populate the local library.</div>
+          {% endif %}
+        </section>
+      {% endblock %}
+    </main>
+  </body>
+</html>

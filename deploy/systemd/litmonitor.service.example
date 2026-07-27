@@ -1,0 +1,15 @@
+[Unit]
+Description=LitMonitor Web Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=<PROJECT_DIR>
+ExecStart=pixi run web-prod
+Restart=always
+RestartSec=5
+EnvironmentFile=<PROJECT_DIR>/.env
+
+[Install]
+WantedBy=multi-user.target
+

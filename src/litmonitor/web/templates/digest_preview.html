@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Digests - LitMonitor{% endblock %}
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Digest Center</h1>
+    <p>Inspect generated weekly email digests and review send status.</p>
+  </div>
+  <span class="badge green">SMTP ready when configured</span>
+</section>
+
+{% if digest %}
+  <section class="panel">
+    <div class="section-header">
+      <h2>{{ icon("mail") }}{{ digest.subject }}</h2>
+      <span class="badge {{ 'green' if digest.status == 'sent' else '' }}">{{ digest.status }}</span>
+    </div>
+    <div>{{ digest.body_html | safe }}</div>
+  </section>
+{% else %}
+  <section class="panel">
+    <div class="section-header">
+      <h2>{{ icon("mail") }}Digest history</h2>
+      <span class="meta">{{ digests | length }} digests</span>
+    </div>
+    {% if digests %}
+      <table>
+        <tr><th>ID</th><th>Subject</th><th>Status</th><th>Papers</th><th>Preview</th></tr>
+        {% for item in digests %}
+        <tr>
+          <td>{{ item.id }}</td>
+          <td><strong>{{ item.subject }}</strong><br><span class="meta">{{ item.email_to }}</span></td>
+          <td><span class="badge {{ 'green' if item.status == 'sent' else '' }}">{{ item.status }}</span></td>
+          <td>{{ item.paper_count }}</td>
+          <td><a class="button secondary" href="/digests/preview/{{ item.run_id }}">{{ icon("mail") }}Open</a></td>
+        </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      <div class="empty-state">No digest has been generated yet. Run a profile to create the first weekly preview.</div>
+    {% endif %}
+  </section>
+{% endif %}
+{% endblock %}

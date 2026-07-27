@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Papers - LitMonitor{% endblock %}
+{% block content %}
+<section class="page-title">
+  <div>
+    <h1>Paper Library</h1>
+    <p>Review deduplicated records saved from PubMed searches and weekly profile runs.</p>
+  </div>
+  <a class="button" href="/search">{{ icon("search") }}Search PubMed</a>
+</section>
+
+<section class="panel">
+  <h2>{{ icon("search") }}Filter papers</h2>
+  <form class="search-form" method="get">
+    <div>
+      <label for="q">Keyword</label>
+      <input id="q" name="q" value="{{ q or '' }}" placeholder="endothelial">
+    </div>
+    <div>
+      <label for="journal">Journal</label>
+      <input id="journal" name="journal" value="{{ journal or '' }}" placeholder="Circulation">
+    </div>
+    <div></div>
+    <button type="submit">{{ icon("search") }}Filter</button>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="section-header">
+    <h2>{{ icon("paper") }}Saved articles</h2>
+    <span class="meta">{{ papers | length }} records</span>
+  </div>
+  {% if papers %}
+    <div class="article-list">
+      {% for paper in papers %}
+        <article class="article">
+          <h3>{{ paper.title }}</h3>
+          <div class="article-meta">
+            <span>{{ paper.journal or "Journal not available" }}</span>
+            <span>{{ paper.publication_date or "Date not available" }}</span>
+            {% if paper.doi %}<span>DOI {{ paper.doi }}</span>{% endif %}
+            {% if paper.pmid %}<span>PMID {{ paper.pmid }}</span>{% endif %}
+          </div>
+          {% if paper.abstract %}
+            <p>{{ paper.abstract[:360] }}{% if paper.abstract|length > 360 %}...{% endif %}</p>
+          {% endif %}
+          {% if paper.url %}
+            <a class="button secondary" href="{{ paper.url }}" target="_blank" rel="noreferrer">{{ icon("paper") }}Open source</a>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">No saved papers match the current filter.</div>
+  {% endif %}
+</section>
+{% endblock %}

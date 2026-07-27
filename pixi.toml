@@ -1,0 +1,35 @@
+[workspace]
+name = "litmonitor"
+version = "0.1.0"
+description = "Personal biomedical literature monitor with CLI, Web, scheduled digest, and LLM analysis"
+channels = ["conda-forge"]
+platforms = ["linux-64", "win-64", "osx-64", "osx-arm64"]
+
+[activation.env]
+PYTHONPATH = "src"
+
+[tasks]
+init-db = "python -m litmonitor.cli init-db"
+web = "uvicorn litmonitor.main:app --host 127.0.0.1 --port 8000 --reload"
+web-prod = "uvicorn litmonitor.main:app --host 127.0.0.1 --port 8112 --proxy-headers"
+test = "pytest"
+lint = "ruff check src tests"
+format = "ruff format src tests"
+lit = "python -m litmonitor.cli"
+
+[dependencies]
+python = ">=3.11,<3.13"
+fastapi = "*"
+uvicorn = "*"
+typer = "*"
+sqlmodel = "*"
+pydantic = "*"
+pydantic-settings = "*"
+httpx = "*"
+python-dotenv = "*"
+python-multipart = "*"
+jinja2 = "*"
+apscheduler = "*"
+rich = "*"
+pytest = "*"
+ruff = "*"

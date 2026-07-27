@@ -1,0 +1,13 @@
+[Unit]
+Description=Cloudflare Tunnel for LitMonitor
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=cloudflared tunnel --config <PROJECT_DIR>/deploy/cloudflare/config.yml run
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+

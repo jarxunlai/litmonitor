@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "litmonitor"
+version = "0.1.0"
+description = "Personal biomedical literature monitor with CLI, Web, scheduled digest, and LLM analysis"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi",
+  "uvicorn",
+  "typer",
+  "sqlmodel",
+  "pydantic",
+  "pydantic-settings",
+  "httpx",
+  "python-dotenv",
+  "python-multipart",
+  "jinja2",
+  "apscheduler",
+  "rich",
+]
+
+[project.scripts]
+lit = "litmonitor.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/litmonitor"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
